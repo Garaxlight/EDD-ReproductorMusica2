@@ -69,7 +69,7 @@ int main(){
             case 'E':
             case 'e':
                 system("cls");
-                if(player.queue.isEmpty()) {
+                if(player.queue.isEmpty() && player.repeatMode == 0) {
                     cout << "La cola de reproduccion esta vacia." << endl;
                 } else {
                     player.nextTrack();

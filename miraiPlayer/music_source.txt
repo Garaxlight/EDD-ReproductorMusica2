@@ -1,0 +1,8 @@
+1,Bohemian Rhapsody,Queen,A Night at the Opera,1975,354,/music/queen1.mp3
+2,Billie Jean,Michael Jackson,Thriller,1982,294,/music/mj1.mp3
+3,Smells Like Teen Spirit,Nirvana,Nevermind,1991,301,/music/nirvana1.mp3
+4,Shape of You,Ed Sheeran,Divide,2017,233,/music/ed1.mp3
+5,Blinding Lights,The Weeknd,After Hours,2020,200,/music/weeknd1.mp3
+6,Hotel California,Eagles,Hotel California,1976,390,/music/eagles1.mp3
+7,Rolling in the Deep,Adele,21,2010,228,/music/adele1.mp3
+8,Imagine,John Lennon,Imagine,1971,183,/music/lennon1.mp3

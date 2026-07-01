@@ -7,7 +7,7 @@
 ## Integrantes
 
 Ramiro Alvarado Durán ||
-Patricio Alvarado Durán
+Patricio Alvarado Durán || Alonso Jorquera
 
 ---
 

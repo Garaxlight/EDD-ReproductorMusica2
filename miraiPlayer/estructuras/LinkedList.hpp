@@ -116,4 +116,12 @@ class LinkedList {
         const Node<T>* getHead() const{
             return head;
         }
+
+        ~LinkedList(){
+            while (head != nullptr){
+                Node<T>* temp = head;
+                head = head->next;
+                delete temp;
+            }
+        }
 };

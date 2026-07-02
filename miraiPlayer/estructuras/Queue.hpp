@@ -62,4 +62,14 @@ class Queue{
         return head;
     }
 
+    ~Queue(){
+        while (head != nullptr){
+            Node<T>* temp = head;
+            head = head->next;
+            delete temp;
+        }
+
+        back = nullptr;
+    }
+
 };

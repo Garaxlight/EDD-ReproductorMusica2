@@ -36,4 +36,12 @@ class Stack{
         bool isEmpty(){
             return topNode == nullptr;
         }
+
+        ~Stack(){
+            while (topNode != nullptr){
+                Node<T>* temp = topNode;
+                topNode = topNode->next;
+                delete temp;
+            }
+        }
 };

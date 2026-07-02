@@ -117,6 +117,12 @@ class LinkedList {
             return head;
         }
 
+        ~LinkedList(){
+            while (head != nullptr){
+                Node<T>* temp = head;
+                head = head->next;
+                delete temp;
+            }
         void insertAt(int index, T data){
             if (index == 0) {
                 insertFront(data);

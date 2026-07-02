@@ -5,6 +5,7 @@
 #include "clases/Song.hpp"
 #include "estructuras/LinkedList.hpp"
 #include "estructuras/Status.hpp"
+#include "estructuras/Utils.hpp"
 #include "nucleo/FileManager.hpp"
 #include "nucleo/PlaylistMenu.hpp"
 #include "nucleo/SongMenu.hpp"
@@ -52,13 +53,13 @@ int main(){
         switch (opcion){
             case 'W':
             case 'w':
-                system("cls");
+                clearScreen();
                 player.playPause();
                 cout << (player.isPlaying ? "Reproduciendo: " : "En pausa: ") << player.song.nombre << endl;
                 break;
             case 'Q':
             case 'q':
-                system("cls");
+                clearScreen();
                 if(player.history.isEmpty()){
                     cout << "No hay pista anterior en el historial." << endl;
                 } else {
@@ -68,7 +69,7 @@ int main(){
                 break;
             case 'E':
             case 'e':
-                system("cls");
+                clearScreen();
                 if(player.queue.isEmpty() && player.repeatMode == 0) {
                     cout << "La cola de reproduccion esta vacia." << endl;
                 } else {
@@ -78,29 +79,29 @@ int main(){
                 break;
             case 'S':
             case 's':
-                system("cls");
+                clearScreen();
                 player.toggleShuffle();
                 cout << "Modo Aleatorio: " << (player.isShuffle ? "ON" : "OFF") << endl;
                 break;
             case 'R':
             case 'r':
-                system("cls");
+                clearScreen();
                 player.toggleRepeat();
                 cout << "Modo de repeticion: " << (player.repeatMode == 0 ? "OFF" : player.repeatMode == 1 ? "Repetir 1" : "Repetir todas") << endl;
                 break;
             case 'A':
             case 'a':
-                system("cls");
+                clearScreen();
                 PlaylistMenu(player);
                 break;
             case 'L':
             case 'l':
-                system("cls");
+                clearScreen();
                 SongMenu(listaCanciones, player);
                 break;
             case 'X':
             case 'x':
-                system("cls");
+                clearScreen();
                 ejecutando = false;
                 status.shuffle = player.isShuffle;
                 status.repeatMode = player.repeatMode;

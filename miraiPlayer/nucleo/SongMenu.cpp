@@ -5,6 +5,7 @@
 #include "../clases/Player.hpp"
 #include "../clases/Song.hpp"
 #include "../estructuras/LinkedList.hpp"
+#include "../estructuras/Utils.hpp"
 #include "../nucleo/FileManager.hpp"
 
 using namespace std;
@@ -69,7 +70,7 @@ void menuCanciones(LinkedList<Song>& lista, Player& player){
     bool enMenu = true;
 
     while(enMenu){
-        system("cls");
+        clearScreen();
         mostrarCanciones(lista);
         cout << "\n=== OPCIONES ===" << endl;
         cout << "R<num> - Reproducir cancion" << endl;
@@ -198,7 +199,7 @@ void menuCanciones(LinkedList<Song>& lista, Player& player){
             }
 
             case 'V':
-                system("cls");
+                clearScreen();
                 enMenu = false;
                 break;
 

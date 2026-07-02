@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "PlaylistMenu.hpp"
+#include "../estructuras/Utils.hpp"
 
 using namespace std;
 
@@ -31,7 +32,7 @@ bool parseIndex(const std::string& input, int& index){
 }
 
 void PlaylistMenu(Player& player){
-    system("cls");
+    clearScreen();
     bool enMenu = true;
     string input;
 
@@ -66,7 +67,7 @@ void PlaylistMenu(Player& player){
 
         switch (opcion){
             case 'S':{
-                system("cls");
+                clearScreen();
                 int index = -1;
                 if (!parseIndex(input, index) || index < 0){
                     cout << "Indice invalido" << endl;
@@ -103,7 +104,7 @@ void PlaylistMenu(Player& player){
             }
 
             case 'V':
-                system("cls");
+                clearScreen();
                 enMenu = false;
                 break;
 

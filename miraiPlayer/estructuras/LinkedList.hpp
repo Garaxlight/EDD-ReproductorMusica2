@@ -123,6 +123,8 @@ class LinkedList {
                 head = head->next;
                 delete temp;
             }
+        }
+
         void insertAt(int index, T data){
             if (index == 0) {
                 insertFront(data);

@@ -33,6 +33,7 @@ int main(){
     if (!FileManager::loadMusic("music_source.txt", listaCanciones)){
         cout << "No se pudo cargar el catalogo de canciones. Se creara vacio al reiniciar." << endl;
     }
+    FileManager::loadPlayCount("song_ranking.txt", listaCanciones);
 
     Status status = FileManager::loadStatus("status.cfg");
     player.isShuffle = status.shuffle;
@@ -106,7 +107,10 @@ int main(){
                 status.shuffle = player.isShuffle;
                 status.repeatMode = player.repeatMode;
                 status.currentSongId = player.song.id;
+
                 FileManager::saveStatus("status.cfg", status);
+                FileManager::savePlayCount("song_ranking.txt", listaCanciones);
+                
                 cout << "Saliendo del reproductor..." << endl;
                 break;
             default:

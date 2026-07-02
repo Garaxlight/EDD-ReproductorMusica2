@@ -3,6 +3,7 @@
 #include "../estructuras/LinkedList.hpp"
 #include "../estructuras/Queue.hpp"
 #include "../estructuras/Stack.hpp"
+#include "../estructuras/Heap.hpp"
 
 class Player {
     public:
@@ -12,14 +13,18 @@ class Player {
         int repeatMode; // 0 para off, 1 para repetir una, 2 para repetir todas
         Queue<Song> queue;
         Stack<Song> history;
+        LinkedList<Song>* catalog;
+        Heap<Song*> songHeap;
 
         void playPause();
         void prevTrack();
         void nextTrack();
         void toggleShuffle();
         void toggleRepeat();
-        void initializeQueueFromCatalog(const LinkedList<Song>& catalog, int currentSongId = -1);
+        void initializeQueueFromCatalog(LinkedList<Song>& catalog, int currentSongId = -1);
         void shuffleQueue();
+        void incrementPlayCount();
+        Heap<Song*> getSongHeap() const;
 
         Player(){
             song = Song();
@@ -27,5 +32,6 @@ class Player {
             isPlaying = false;
             isShuffle = false;
             repeatMode = 0;
+            catalog = nullptr;
         }
 };

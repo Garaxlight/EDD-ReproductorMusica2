@@ -10,6 +10,7 @@ Song::Song() {
     año = 0;
     duracion = 0;
     ubicacion = "";
+    reproducciones = 0;
 }
 
 Song::Song(int id, string nombre, string artista, 
@@ -21,6 +22,7 @@ Song::Song(int id, string nombre, string artista,
     this->año = año;
     this->duracion = duracion;
     this->ubicacion = ubicacion;
+    this->reproducciones = 0;
 }
 
 void Song::mostrar() const {

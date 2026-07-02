@@ -119,6 +119,55 @@ class FileManager{
         return true;
     }
 
+    static void loadPlayCount(const std::string& filename, LinkedList<Song>& lista){
+        std::ifstream file(filename);
+        if (!file.is_open()){
+            return;
+        }
+
+        std::string line;
+        while (std::getline(file, line)){
+            if (line.empty()) continue;
+
+            std::stringstream ss(line);
+            std::string idStr, countStr;
+            std::getline(ss, idStr, ',');
+            std::getline(ss, countStr);
+
+            int songId = 0, playCount = 0;
+            if (!parseInt(idStr, songId) || !parseInt(countStr, playCount)){
+                continue;
+            }
+
+            // Buscar la canción en la lista y actualizar contador
+            Node<Song>* actual = lista.getHead();
+            while (actual != nullptr){
+                if (actual->data.id == songId){
+                    actual->data.reproducciones = playCount;
+                    break;
+                }
+                actual = actual->next;
+            }
+        }
+
+        file.close();
+    }
+
+    static void savePlayCount(const std::string& filename, LinkedList<Song>& lista){
+        std::ofstream file(filename);
+        if (!file.is_open()){
+            return;
+        }
+
+        Node<Song>* actual = lista.getHead();
+        while (actual != nullptr){
+            file << actual->data.id << "," << actual->data.reproducciones << std::endl;
+            actual = actual->next;
+        }
+
+        file.close();
+    }
+
     private:
     static std::string resolveMusicFilePath(const std::string& filename){
         const std::string primary = filename.empty() ? "music_source.txt" : filename;

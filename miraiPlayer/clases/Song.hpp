@@ -11,6 +11,7 @@ class Song {
         int año;
         int duracion;
         std::string ubicacion;
+        int reproducciones;
 
         Song();
         

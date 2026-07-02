@@ -116,4 +116,27 @@ class LinkedList {
         const Node<T>* getHead() const{
             return head;
         }
+
+        void insertAt(int index, T data){
+            if (index == 0) {
+                insertFront(data);
+                return;
+            }
+
+            Node<T>* actual = head;
+            int i = 0;
+
+            while (actual->next != nullptr && i < index - 1){
+                actual = actual->next;
+                i++;
+            }
+
+            if (i != index - 1) {
+                throw std::out_of_range("Indice fuera de rango");
+            }
+
+            Node<T>* nuevo = new Node<T>(data);
+            nuevo->next = actual->next;
+            actual->next = nuevo;
+        }
 };

@@ -115,7 +115,6 @@ void menuCanciones(MusicCatalog& catalog, Player& player){
                         player.history.pop();
                     }
 
-                    incrementCurrentSongPlays(catalog, player);
                     cout << "Reproduciendo: " << s.nombre << " - " << s.artista << endl;
                 }catch (...){
                     cout << "Indice no valido." << endl;

@@ -73,9 +73,6 @@ int main(){
             case 'w':
                 clearScreen();
                 player.playPause();
-                if (player.isPlaying){
-
-                }
                 mostrarEstado(player);
                 break;
             case 'Q':

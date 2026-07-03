@@ -9,6 +9,7 @@
 #include "nucleo/FileManager.hpp"
 #include "nucleo/PlaylistMenu.hpp"
 #include "nucleo/SongMenu.hpp"
+#include "nucleo/TopMenu.hpp"
 
 using namespace std;
 
@@ -21,6 +22,8 @@ void mostrarMenu(){
     cout << "R - Repeticion" << endl;
     cout << "A - Ver lista actual" << endl;
     cout << "L - Lista de Canciones" << endl;
+    cout << "F - Buscar canciones" << endl;
+    cout << "T - TOP 10 Artistas y Canciones" << endl;
     cout << "X - Salir" << endl;
     cout << "============================" << endl;
     cout << "Ingrese una opcion: ";
@@ -99,6 +102,11 @@ int main(){
             case 'l':
                 clearScreen();
                 SongMenu(listaCanciones, player);
+                break;
+            case 'T':
+            case 't':
+                clearScreen();
+                TopMenu::showTopMenu(player, listaCanciones);
                 break;
             case 'X':
             case 'x':

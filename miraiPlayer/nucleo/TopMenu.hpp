@@ -53,7 +53,7 @@ class TopMenu {
             }
 
             T getAt(int idx) const {
-                if (idx >= = && idx < cantidad){
+                if (idx >= 0 && idx < cantidad){
                     return elementos[idx];
                 }
                 throw std::runtime_error("Indice fuera de rango");
@@ -75,7 +75,7 @@ class TopMenu {
 
 
         //Extraer artistas unicos con reproducciones
-        static TopList<Artist> getTopArtists(LinkedList<Song>& catalog, int topN = 10){
+        static TopList<Artist>* getTopArtists(LinkedList<Song>& catalog, int topN = 10){
             TopList<Artist>* artists = new TopList<Artist>(topN);
             Artist* tempArtists = new Artist[100]; // Array temporal para guardar artistas unicos
             int artistCount = 0;
@@ -94,7 +94,7 @@ class TopMenu {
                 }
 
                 if (!encontrado && artistCount < 100){
-                    tempArtists[artistCount++] = Artist(actual->data.artista.c_str(), actual->data.reproducciones);
+                    tempArtists[artistCount] = Artist(actual->data.artista.c_str(), actual->data.reproducciones);
                     artistCount++;
                 }
                 actual = actual->next;
@@ -127,12 +127,12 @@ class TopMenu {
             }
 
             delete[] tempArtists;
-            return *artists;
+            return artists;
         }
 
         // Obtener canciones de un artista especifico
 
-        static LinkedList<Song> getSongsFromArtist(const char* artistName, LinkedList<Song>& catalog){
+        static LinkedList<Song>* getSongsFromArtist(const char* artistName, LinkedList<Song>& catalog){
             LinkedList<Song>* artistSongs = new LinkedList<Song>();
             Node<Song>* actual = catalog.getHead();
 
@@ -142,7 +142,7 @@ class TopMenu {
                 }
                 actual = actual->next;
             }
-            return *artistSongs;
+            return artistSongs;
         }
 
         //Bubble sort para canciones
@@ -172,7 +172,7 @@ class TopMenu {
         static void showTopMenu(Player& player, LinkedList<Song>& catalog);
         static void showTopSongs(Player& player, LinkedList<Song>& catalog);
         static void showTopArtists(Player& player, LinkedList<Song>& catalog);
-        static void showSongsFromArtist(Player& player, LinkedList<Song>& catalog);
+        static void showSongsFromArtist(Player& player,const char* artistName, LinkedList<Song>& catalog);
 };
 
 extern void clearScreen();

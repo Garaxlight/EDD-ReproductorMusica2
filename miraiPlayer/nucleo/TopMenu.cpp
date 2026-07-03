@@ -46,69 +46,31 @@ void TopMenu::showTopMenu(Player& player, LinkedList<Song>& catalog){
 
 void TopMenu::showTopSongs(Player& player, LinkedList<Song>& catalog){
 
-    int songCount = 0;
-    Node<Song>* temp = catalog.getHead();
+    Heap<Song*> songHeap = getTopSongs(catalog, 10);
 
-    while (temp != nullptr){
-        songCount++;
-        temp = temp->next;
-    }
-
-    if (songCount == 0){
+    if (songHeap.isEmpty()){
         clearScreen();
         cout << "No hay mas canciones en el catalogo." << endl;
         system("pause");
         return;
     }
 
-    Song** songArray = new Song*[songCount];
-    Node<Song>* actual = catalog.getHead();
-    int idx = 0;
-    while (actual !=nullptr){
-        songArray[idx++] = &(actual->data);
-        actual = actual->next;
+    // Extraer los top 10 del heap
+    Song** topSongs = new Song*[10];
+    int topCount = 0;
+    while (!songHeap.isEmpty() && topCount < 10){
+        topSongs[topCount++] = songHeap.extractMax();
     }
-
-    /*Bubble sort por:
-        1. Reproducciones (descendente)
-        2. Nombre (Ascendente)
-        3. Artista (Ascendente)
-    */
-
-    for (int i = 0; i < songCount - 1; i++){
-        for (int j = 0; j < songCount -i -1; j++){
-            bool swapped = false;
-
-            if (songArray[j]->reproducciones < songArray[j+1]->reproducciones){
-                swapped = true;
-            }else if(songArray[j]->reproducciones == songArray[j+1]->reproducciones){
-                if(songArray[j]->nombre > songArray[j+1]->nombre){
-                    swapped = true;
-                }else if (songArray[j]->nombre == songArray[j+1]->nombre){
-                    if(songArray[j]->artista > songArray[j+1]->artista){
-                        swapped = true;
-                    }
-                }
-            }
-            if (swapped) {
-                Song* temp = songArray[j];
-                songArray[j] = songArray[j+1];
-                songArray[j+1] = temp;
-            }
-        }
-    }
-
-    int topCount = (songCount > 10) ? 10 : songCount;
 
     bool enTopSongs = true;
 
     while (enTopSongs){
         clearScreen();
-        cout << "Ranking TOP" << topCount << "Canciones mas escuchadas:\n" << endl;
+        cout << "Ranking TOP " << topCount << " Canciones mas escuchadas:\n" << endl;
 
         for (int i=0; i< topCount; i++){
-            cout << "[" << setw(2) << songArray[i]->reproducciones << "] "
-            << songArray[i]->nombre << " - " << songArray[i]->artista << endl;
+            cout << "[" << setw(2) << topSongs[i]->reproducciones << "] "
+            << topSongs[i]->nombre << " - " << topSongs[i]->artista << endl;
         }
 
         cout << "\nOpciones: " << endl;
@@ -142,11 +104,11 @@ void TopMenu::showTopSongs(Player& player, LinkedList<Song>& catalog){
                 player.queue.dequeue();
                 player.initializeQueueFromCatalog(catalog, -1);
                 player.shuffleQueue();
-                player.song = *(songArray[num]);
+                player.song = *(topSongs[num]);
                 player.isPlaying = true;
 
                 clearScreen();
-                cout << "Reproduciendo: " << songArray[num]->nombre << " - " << songArray[num]->artista << endl;
+                cout << "Reproduciendo: " << topSongs[num]->nombre << " - " << topSongs[num]->artista << endl;
                 system("pause");
 
             } else {
@@ -168,16 +130,16 @@ void TopMenu::showTopSongs(Player& player, LinkedList<Song>& catalog){
                 continue;
             }
             if (num >=0 && num < topCount){
-                player.queue.enqueue(*(songArray[num]));
+                player.queue.enqueue(*(topSongs[num]));
 
                 clearScreen();
-                cout << "Cancion agregada a la lista de reproduccion: " << songArray[num]->nombre << endl;
+                cout << "Cancion agregada a la lista de reproduccion: " << topSongs[num]->nombre << endl;
                 system("pause");
 
             }
         }else  if ((comando == 'A' || comando == 'a') && input.length() == 1){
             enTopSongs = false;
-            delete[] songArray;
+            delete[] topSongs;
             showTopArtists(player, catalog);
             return;
         }else if (comando == 'V' || comando == 'v'){
@@ -189,30 +151,36 @@ void TopMenu::showTopSongs(Player& player, LinkedList<Song>& catalog){
         }
     }
 
-    delete[] songArray;
+    delete[] topSongs;
 
 }
 
 void TopMenu::showTopArtists(Player& player, LinkedList<Song>& catalog){
-    TopList<Artist>* topArtists = getTopArtists(catalog, 10);
+    Heap<Artist*>* artistsHeap = getTopArtistsHeap(catalog, 10);
 
-    if (topArtists->getSize() == 0){
+    if (artistsHeap->isEmpty()){
         clearScreen();
         cout << "No hay canciones en el catalogo." << endl;
         system("pause");
-        delete topArtists;
+        delete artistsHeap;
         return;
+    }
+
+    // Extraer los top 10 del heap
+    Artist** topArtists = new Artist*[10];
+    int topCount = 0;
+    while (!artistsHeap->isEmpty() && topCount < 10){
+        topArtists[topCount++] = artistsHeap->extractMax();
     }
 
     bool enTopArtists = true;
 
     while (enTopArtists){
         clearScreen();
-        cout << "Ranking TOP" << topArtists->getSize() << "Artistas mas escuchados:\n" << endl;
+        cout << "Ranking TOP " << topCount << " Artistas mas escuchados:\\n" << endl;
 
-        for (int i = 0; i < topArtists->getSize(); i++){
-            Artist artist = topArtists->getAt(i);
-            cout << (i + 1) << ". [" << setw(2) << artist.reproducciones << "] " << artist.name << endl;
+        for (int i = 0; i < topCount; i++){
+            cout << (i + 1) << ". [" << setw(2) << topArtists[i]->reproducciones << "] " << topArtists[i]->nombre << endl;
         }
 
         cout << "\nOpciones:" << endl;
@@ -242,9 +210,8 @@ void TopMenu::showTopArtists(Player& player, LinkedList<Song>& catalog){
                 continue;
             }
 
-            if (num >= 0 && num < topArtists->getSize()){
-                Artist artist = topArtists->getAt(num);
-                showSongsFromArtist(player, artist.name, catalog);
+            if (num >= 0 && num < topCount){
+                showSongsFromArtist(player, topArtists[num]->nombre, catalog);
             }else {
                 clearScreen();
                 cout << "Posicion invalida." << endl;
@@ -252,7 +219,8 @@ void TopMenu::showTopArtists(Player& player, LinkedList<Song>& catalog){
             }
         }else if (comando == 'C' || comando == 'c'){
             enTopArtists = false;
-            delete topArtists;
+            delete[] topArtists;
+            delete artistsHeap;
             showTopSongs(player, catalog);
             return;
         }else if (comando == 'V' || comando == 'v'){
@@ -264,10 +232,11 @@ void TopMenu::showTopArtists(Player& player, LinkedList<Song>& catalog){
         }
     }
 
-    delete topArtists;
+    delete[] topArtists;
+    delete artistsHeap;
 }
 
-void TopMenu::showSongsFromArtist(Player& player, const char* artistName, LinkedList<Song>& catalog){
+void TopMenu::showSongsFromArtist(Player& player, const std::string& artistName, LinkedList<Song>& catalog){
     LinkedList<Song>* artistSongs = getSongsFromArtist(artistName, catalog);
 
     //Contar canciones

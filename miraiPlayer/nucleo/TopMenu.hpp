@@ -15,15 +15,14 @@
 class TopMenu {
     private:
         struct Artist{
-            char name[100];
+            std::string nombre;
+            std::string artista;  // Campo para compatibilidad con Heap compare()
             int reproducciones;
 
             Artist() : reproducciones(0) {
-                name[0] = '\0';
             }
 
-            Artist(const char* n, int r) : reproducciones(r){
-                strcpy(name,n);
+            Artist(const char* n, int r) : nombre(n), artista(n), reproducciones(r){
             }
         };
 
@@ -74,10 +73,10 @@ class TopMenu {
         }
 
 
-        //Extraer artistas unicos con reproducciones
-        static TopList<Artist>* getTopArtists(LinkedList<Song>& catalog, int topN = 10){
-            TopList<Artist>* artists = new TopList<Artist>(topN);
-            Artist* tempArtists = new Artist[100]; // Array temporal para guardar artistas unicos
+        //Extraer artistas unicos con reproducciones usando Heap
+        static Heap<Artist*>* getTopArtistsHeap(LinkedList<Song>& catalog, int topN = 10){
+            Heap<Artist*>* heap = new Heap<Artist*>();
+            Artist* tempArtists = new Artist[100];
             int artistCount = 0;
 
             Node<Song>* actual = catalog.getHead();
@@ -86,7 +85,7 @@ class TopMenu {
                 bool encontrado = false;
 
                 for (int i = 0; i < artistCount; ++i){
-                    if (strcmp(tempArtists[i].name, actual->data.artista.c_str()) == 0){
+                    if (tempArtists[i].nombre == actual->data.artista){
                         tempArtists[i].reproducciones += actual->data.reproducciones;
                         encontrado = true;
                         break;
@@ -100,44 +99,23 @@ class TopMenu {
                 actual = actual->next;
             }
 
-            // 1. Ordenar artistas por reproducciones
-            // 2. Ordenar artistas alfabeticamente
-
-            for (int i = 0; i < artistCount - 1; ++i){
-                for (int j = 0; j < artistCount - i - 1; j++){
-                    int cmp = 0;
-                    if (tempArtists[j].reproducciones != tempArtists[j+1].reproducciones){
-                        cmp = tempArtists[j+1].reproducciones - tempArtists[j].reproducciones;
-                    } else {
-                        cmp = strcmp(tempArtists[j].name, tempArtists[j+1].name);
-                    }
-
-                    if (cmp < 0){
-                        Artist temp = tempArtists[j];
-                        tempArtists[j] = tempArtists[j+1];
-                        tempArtists[j+1] = temp;
-                    }
-                }
-            }
-
-            //Agregar Top N
-            int limite = (artistCount < topN) ? artistCount : topN;
-            for (int i = 0; i < limite; i++){
-                artists->agregar(tempArtists[i]);
+            // Insertar todos los artistas en el Heap (se ordena automáticamente)
+            for (int i = 0; i < artistCount; ++i){
+                heap->insert(&tempArtists[i]);
             }
 
             delete[] tempArtists;
-            return artists;
+            return heap;
         }
 
         // Obtener canciones de un artista especifico
 
-        static LinkedList<Song>* getSongsFromArtist(const char* artistName, LinkedList<Song>& catalog){
+        static LinkedList<Song>* getSongsFromArtist(const std::string& artistName, LinkedList<Song>& catalog){
             LinkedList<Song>* artistSongs = new LinkedList<Song>();
             Node<Song>* actual = catalog.getHead();
 
             while (actual != nullptr){
-                if (strcmp(actual->data.artista.c_str(), artistName) == 0){
+                if (actual->data.artista == artistName){
                     artistSongs->insertEnd(actual->data);
                 }
                 actual = actual->next;
@@ -172,7 +150,7 @@ class TopMenu {
         static void showTopMenu(Player& player, LinkedList<Song>& catalog);
         static void showTopSongs(Player& player, LinkedList<Song>& catalog);
         static void showTopArtists(Player& player, LinkedList<Song>& catalog);
-        static void showSongsFromArtist(Player& player,const char* artistName, LinkedList<Song>& catalog);
+        static void showSongsFromArtist(Player& player, const std::string& artistName, LinkedList<Song>& catalog);
 };
 
 extern void clearScreen();

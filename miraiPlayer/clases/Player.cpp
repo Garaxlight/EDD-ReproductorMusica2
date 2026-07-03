@@ -75,6 +75,30 @@ void Player::initializeQueueFromCatalog(const LinkedList<Song>& catalog, int cur
     isPlaying = false;
 }
 
+void Player::playFromSelection(const Song& selected, const LinkedList<Song>& catalog, bool randomizeQueue){
+    song = selected;
+    isPlaying = true;
+
+    while(!queue.isEmpty()){
+        queue.dequeue();
+    }
+    while(!history.isEmpty()){
+        history.pop();
+    }
+
+    const Node<Song>* actual = catalog.getHead();
+    while(actual != nullptr){
+        if (actual->data.id != song.id){
+            queue.enqueue(actual->data);
+        }
+        actual = actual->next;
+    }
+
+    if (randomizeQueue && !queue.isEmpty()){
+        shuffleQueue();
+    }
+}
+
 void Player::shuffleQueue(){
     if (queue.isEmpty()){
         return;

@@ -19,6 +19,7 @@ class Player {
         void toggleShuffle();
         void toggleRepeat();
         void initializeQueueFromCatalog(const LinkedList<Song>& catalog, int currentSongId = -1);
+        void playFromSelection(const Song& selected, const LinkedList<Song>& catalog, bool randomizeQueue);
         void shuffleQueue();
 
         Player(){

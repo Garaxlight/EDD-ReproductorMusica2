@@ -7,6 +7,7 @@
 #include "../estructuras/LinkedList.hpp"
 #include "../estructuras/Utils.hpp"
 #include "../nucleo/FileManager.hpp"
+#include "../nucleo/MusicCatalog.hpp"
 
 using namespace std;
 
@@ -65,7 +66,8 @@ void mostrarCanciones(LinkedList<Song>& lista){
     }
 }
 
-void menuCanciones(LinkedList<Song>& lista, Player& player){
+void menuCanciones(MusicCatalog& catalog, Player& player){
+    LinkedList<Song>& lista = catalog.canciones;
     string input;
     bool enMenu = true;
 
@@ -97,23 +99,18 @@ void menuCanciones(LinkedList<Song>& lista, Player& player){
 
                 try{
                     Song s = lista.getAt(index);
-                    Song anterior = player.song;
-
                     player.song = s;
                     player.isPlaying = true;
-                    cout << "Reproduciendo: " << s.nombre << " - " << s.artista << endl;
 
                     while(!player.queue.isEmpty()){
                         player.queue.dequeue();
                     }
-
                     while(!player.history.isEmpty()){
                         player.history.pop();
                     }
 
-                    if (anterior.id != -1){
-                        player.history.push(anterior);
-                    }
+                    incrementCurrentSongPlays(catalog, player);
+                    cout << "Reproduciendo: " << s.nombre << " - " << s.artista << endl;
                 }catch (...){
                     cout << "Indice no valido." << endl;
                 }
@@ -176,7 +173,9 @@ void menuCanciones(LinkedList<Song>& lista, Player& player){
 
                 nueva.id = lista.size() + 1;
                 lista.insertEnd(nueva);
+                rebuildMusicCatalog(catalog);
                 FileManager::saveMusic("music_source.txt", lista);
+                FileManager::savePlayCount("song_ranking.txt", lista);
                 cout << "Cancion agregada." << endl;
                 break;
             }
@@ -190,7 +189,9 @@ void menuCanciones(LinkedList<Song>& lista, Player& player){
 
                 try{
                     lista.removeAt(index);
+                    rebuildMusicCatalog(catalog);
                     FileManager::saveMusic("music_source.txt", lista);
+                    FileManager::savePlayCount("song_ranking.txt", lista);
                     cout << "Cancion eliminada." << endl;
                 }catch (...){
                     cout << "Indice no valido." << endl;
@@ -209,6 +210,6 @@ void menuCanciones(LinkedList<Song>& lista, Player& player){
     }
 }
 
-void SongMenu(LinkedList<Song>& lista, Player& player) {
-    menuCanciones(lista, player);
+void SongMenu(MusicCatalog& catalog, Player& player) {
+    menuCanciones(catalog, player);
 }

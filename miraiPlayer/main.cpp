@@ -11,6 +11,7 @@
 #include "nucleo/RankingMenu.hpp"
 #include "nucleo/SearchMenu.hpp"
 #include "nucleo/SongMenu.hpp"
+#include "nucleo/TopMenu.hpp"
 
 using namespace std;
 
@@ -33,8 +34,8 @@ void mostrarMenu(const Player& player){
     cout << "E - Pista Siguiente" << endl;
     cout << "S - Modo Aleatorio" << endl;
     cout << "R - Repeticion" << endl;
-    cout << "A - Ver lista de reproduccion actual" << endl;
-    cout << "L - Listado de canciones" << endl;
+    cout << "A - Ver lista actual" << endl;
+    cout << "L - Lista de Canciones" << endl;
     cout << "F - Buscar canciones" << endl;
     cout << "T - TOP 10 Artistas y Canciones" << endl;
     cout << "X - Salir" << endl;
@@ -48,6 +49,7 @@ int main(){
     if (!FileManager::loadMusic("music_source.txt", catalog.canciones)){
         cout << "No se pudo cargar el catalogo de canciones. Se creara vacio al reiniciar." << endl;
     }
+    FileManager::loadPlayCount("song_ranking.txt", listaCanciones);
 
     FileManager::loadPlayCount("song_ranking.txt", catalog.canciones);
     rebuildMusicCatalog(catalog);
@@ -131,6 +133,11 @@ int main(){
             case 't':
                 RankingMenu(catalog, player);
                 break;
+            case 'T':
+            case 't':
+                clearScreen();
+                TopMenu::showTopMenu(player, listaCanciones);
+                break;
             case 'X':
             case 'x':
                 clearScreen();
@@ -138,8 +145,10 @@ int main(){
                 status.shuffle = player.isShuffle;
                 status.repeatMode = player.repeatMode;
                 status.currentSongId = player.song.id;
+
                 FileManager::saveStatus("status.cfg", status);
-                FileManager::savePlayCount("song_ranking.txt", catalog.canciones);
+                FileManager::savePlayCount("song_ranking.txt", listaCanciones);
+                
                 cout << "Saliendo del reproductor..." << endl;
                 break;
             default:

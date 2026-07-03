@@ -34,7 +34,11 @@ void Player::toggleRepeat(){
     }
 }
 
-void Player::initializeQueueFromCatalog(const LinkedList<Song>& catalog, int currentSongId){
+void Player::initializeQueueFromCatalog(LinkedList<Song>& catalog, int currentSongId){
+    this->catalog = &catalog;
+    songHeap.clear();
+
+
     while(!queue.isEmpty()){
         queue.dequeue();
     }
@@ -66,6 +70,9 @@ void Player::initializeQueueFromCatalog(const LinkedList<Song>& catalog, int cur
 
     actual = catalog.getHead();
     while(actual != nullptr){
+
+        songHeap.insert(const_cast<Song*>(&actual->data));
+        
         if (actual->data.id != song.id){
             queue.enqueue(actual->data);
         }
@@ -219,7 +226,7 @@ void Player::nextTrack(){
         song = queue.front();
         queue.dequeue();
     }
-
+    incrementPlayCount();
     isPlaying = true;
 }
 
@@ -235,5 +242,29 @@ void Player::prevTrack() {
 
     song = history.top();
     history.pop();
+
+    incrementPlayCount();
     isPlaying = true;
+}
+void Player::incrementPlayCount(){
+    if (catalog == nullptr || song.id == -1){
+        return;
+    }
+
+    Node<Song>* actual = catalog->getHead();
+
+    while (actual != nullptr){
+        if (actual-> data.id == song.id){
+            actual-> data.reproducciones++;
+            song.reproducciones = actual->data.reproducciones;
+
+            songHeap.rebuild();
+
+            return;
+        }
+        actual = actual->next;
+    }
+}
+Heap<Song*> Player::getSongHeap() const {
+    return songHeap;
 }

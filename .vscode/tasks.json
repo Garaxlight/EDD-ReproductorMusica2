@@ -15,6 +15,7 @@
                 "nucleo/MusicCatalog.cpp",
                 "nucleo/SearchMenu.cpp",
                 "nucleo/RankingMenu.cpp",
+                "nucleo/TopMenu.cpp",
                 "-o",
                 "main.exe"
             ],

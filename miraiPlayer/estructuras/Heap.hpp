@@ -123,4 +123,24 @@ public:
     void clear() {
         size = 0;
     }
+    void rebuild(){
+        for (int i = size / 2 - 1; i >= 0; i--){
+            heapifyDown(i);
+        }
+    }
+
+    Heap(const Heap<T>& other){
+        size = other.size;
+        capacity = other.capacity;
+
+        if (capacity > 0){
+            elements = new T[capacity];
+
+            for (int i = 0; i < size; i++){
+                elements[i] = other.elements[i];
+            }
+        } else {
+            elements = nullptr;
+        }
+    }
 };

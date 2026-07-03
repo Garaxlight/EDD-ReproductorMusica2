@@ -98,8 +98,12 @@ void menuCanciones(LinkedList<Song>& lista, Player& player){
                 try{
                     Song s = lista.getAt(index);
                     Song anterior = player.song;
+                    
+                    Node<Song>* current = lista.getHead();
 
+                    
                     player.song = s;
+                    player.incrementPlayCount();
                     player.isPlaying = true;
                     cout << "Reproduciendo: " << s.nombre << " - " << s.artista << endl;
 

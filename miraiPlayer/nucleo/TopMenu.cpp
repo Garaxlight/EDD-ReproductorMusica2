@@ -177,7 +177,7 @@ void TopMenu::showTopArtists(Player& player, LinkedList<Song>& catalog){
 
     while (enTopArtists){
         clearScreen();
-        cout << "Ranking TOP " << topCount << " Artistas mas escuchados:\\n" << endl;
+        cout << "Ranking TOP " << topCount << " Artistas mas escuchados:\n" << endl;
 
         for (int i = 0; i < topCount; i++){
             cout << (i + 1) << ". [" << setw(2) << topArtists[i]->reproducciones << "] " << topArtists[i]->nombre << endl;

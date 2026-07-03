@@ -40,7 +40,7 @@ void mostrarResultados(const LinkedList<Song*>& resultados, const std::string& q
         return;
     }
 
-    Node<Song*>* actual = resultados.getHead();
+    const Node<Song*>* actual = resultados.getHead();
     int i = 1;
     while (actual != nullptr) {
         Song* song = actual->data;

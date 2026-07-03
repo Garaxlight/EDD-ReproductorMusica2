@@ -8,7 +8,6 @@
 #include "nucleo/FileManager.hpp"
 #include "nucleo/MusicCatalog.hpp"
 #include "nucleo/PlaylistMenu.hpp"
-#include "nucleo/RankingMenu.hpp"
 #include "nucleo/SearchMenu.hpp"
 #include "nucleo/SongMenu.hpp"
 #include "nucleo/TopMenu.hpp"
@@ -49,10 +48,7 @@ int main(){
     if (!FileManager::loadMusic("music_source.txt", catalog.canciones)){
         cout << "No se pudo cargar el catalogo de canciones. Se creara vacio al reiniciar." << endl;
     }
-    FileManager::loadPlayCount("song_ranking.txt", listaCanciones);
-
     FileManager::loadPlayCount("song_ranking.txt", catalog.canciones);
-    rebuildMusicCatalog(catalog);
 
     Status status = FileManager::loadStatus("status.cfg");
     player.isShuffle = status.shuffle;
@@ -77,7 +73,7 @@ int main(){
                 clearScreen();
                 player.playPause();
                 if (player.isPlaying){
-                    incrementCurrentSongPlays(catalog, player);
+                    player.song.reproducciones++;
                 }
                 mostrarEstado(player);
                 break;
@@ -88,7 +84,7 @@ int main(){
                     cout << "No hay pista anterior en el historial." << endl;
                 } else {
                     player.prevTrack();
-                    incrementCurrentSongPlays(catalog, player);
+                    player.song.reproducciones++;
                     mostrarEstado(player);
                 }
                 break;
@@ -99,7 +95,7 @@ int main(){
                     cout << "La cola de reproduccion esta vacia." << endl;
                 } else {
                     player.nextTrack();
-                    incrementCurrentSongPlays(catalog, player);
+                    player.song.reproducciones++;
                     mostrarEstado(player);
                 }
                 break;
@@ -131,12 +127,8 @@ int main(){
                 break;
             case 'T':
             case 't':
-                RankingMenu(catalog, player);
-                break;
-            case 'T':
-            case 't':
                 clearScreen();
-                TopMenu::showTopMenu(player, listaCanciones);
+                TopMenu::showTopMenu(player, catalog.canciones);
                 break;
             case 'X':
             case 'x':
@@ -147,7 +139,7 @@ int main(){
                 status.currentSongId = player.song.id;
 
                 FileManager::saveStatus("status.cfg", status);
-                FileManager::savePlayCount("song_ranking.txt", listaCanciones);
+                FileManager::savePlayCount("song_ranking.txt", catalog.canciones);
                 
                 cout << "Saliendo del reproductor..." << endl;
                 break;

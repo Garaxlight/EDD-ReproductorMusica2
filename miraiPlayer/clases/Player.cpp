@@ -82,7 +82,7 @@ void Player::initializeQueueFromCatalog(LinkedList<Song>& catalog, int currentSo
     isPlaying = false;
 }
 
-void Player::playFromSelection(const Song& selected, const LinkedList<Song>& catalog, bool randomizeQueue){
+void Player::playFromSelection(const Song& selected, LinkedList<Song>& catalog, bool randomizeQueue){
     song = selected;
     isPlaying = true;
 

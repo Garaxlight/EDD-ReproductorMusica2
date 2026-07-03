@@ -1,5 +1,5 @@
 #pragma once
-#include "../estructuras/LinkedList.hpp"
+#include "MusicCatalog.hpp"
 #include "../clases/Player.hpp"
 
-void SongMenu(LinkedList<Song>& lista, Player& player);
+void SongMenu(MusicCatalog& catalog, Player& player);

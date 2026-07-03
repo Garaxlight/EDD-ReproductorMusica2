@@ -21,7 +21,8 @@ class Player {
         void nextTrack();
         void toggleShuffle();
         void toggleRepeat();
-        void initializeQueueFromCatalog(LinkedList<Song>& catalog, int currentSongId = -1);
+        void initializeQueueFromCatalog(const LinkedList<Song>& catalog, int currentSongId = -1);
+        void playFromSelection(const Song& selected, const LinkedList<Song>& catalog, bool randomizeQueue);
         void shuffleQueue();
         void incrementPlayCount();
         Heap<Song*> getSongHeap() const;

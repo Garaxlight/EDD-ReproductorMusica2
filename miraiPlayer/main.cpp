@@ -3,18 +3,32 @@
 #include <string>
 #include "clases/Player.hpp"
 #include "clases/Song.hpp"
-#include "estructuras/LinkedList.hpp"
 #include "estructuras/Status.hpp"
 #include "estructuras/Utils.hpp"
 #include "nucleo/FileManager.hpp"
+#include "nucleo/MusicCatalog.hpp"
 #include "nucleo/PlaylistMenu.hpp"
+#include "nucleo/RankingMenu.hpp"
+#include "nucleo/SearchMenu.hpp"
 #include "nucleo/SongMenu.hpp"
 #include "nucleo/TopMenu.hpp"
 
 using namespace std;
 
-void mostrarMenu(){
-    cout << "=== Reproductor de Musica 2 ===" << endl;
+void mostrarEstado(const Player& player){
+    if (player.song.id == -1){
+        cout << "Sin reproduccion activa" << endl;
+        return;
+    }
+
+    cout << (player.isPlaying ? "Reproduciendo" : "En pausa") << ": " << player.song.nombre << endl;
+    cout << "Artista: " << player.song.artista << endl;
+    cout << "Album: " << player.song.album << " [" << player.song.año << "]" << endl;
+}
+
+void mostrarMenu(const Player& player){
+    mostrarEstado(player);
+    cout << endl << "Opciones:" << endl;
     cout << "W - Reproducir/Pausar" << endl;
     cout << "Q - Pista Anterior" << endl;
     cout << "E - Pista Siguiente" << endl;
@@ -25,30 +39,33 @@ void mostrarMenu(){
     cout << "F - Buscar canciones" << endl;
     cout << "T - TOP 10 Artistas y Canciones" << endl;
     cout << "X - Salir" << endl;
-    cout << "============================" << endl;
     cout << "Ingrese una opcion: ";
 }
 
 int main(){
     Player player;
-    LinkedList<Song> listaCanciones;
+    MusicCatalog catalog;
 
-    if (!FileManager::loadMusic("music_source.txt", listaCanciones)){
+    if (!FileManager::loadMusic("music_source.txt", catalog.canciones)){
         cout << "No se pudo cargar el catalogo de canciones. Se creara vacio al reiniciar." << endl;
     }
     FileManager::loadPlayCount("song_ranking.txt", listaCanciones);
+
+    FileManager::loadPlayCount("song_ranking.txt", catalog.canciones);
+    rebuildMusicCatalog(catalog);
 
     Status status = FileManager::loadStatus("status.cfg");
     player.isShuffle = status.shuffle;
     player.repeatMode = status.repeatMode;
 
-    if (!listaCanciones.isEmpty()){
-        player.initializeQueueFromCatalog(listaCanciones, status.currentSongId);
+    if (!catalog.canciones.isEmpty()){
+        player.initializeQueueFromCatalog(catalog.canciones, status.currentSongId);
     }
 
     bool ejecutando = true;
     while (ejecutando){
-        mostrarMenu();
+        clearScreen();
+        mostrarMenu(player);
 
         char opcion = ' ';
         cin >> opcion;
@@ -59,7 +76,10 @@ int main(){
             case 'w':
                 clearScreen();
                 player.playPause();
-                cout << (player.isPlaying ? "Reproduciendo: " : "En pausa: ") << player.song.nombre << endl;
+                if (player.isPlaying){
+                    incrementCurrentSongPlays(catalog, player);
+                }
+                mostrarEstado(player);
                 break;
             case 'Q':
             case 'q':
@@ -68,7 +88,8 @@ int main(){
                     cout << "No hay pista anterior en el historial." << endl;
                 } else {
                     player.prevTrack();
-                    cout << "Pista anterior: " << player.song.nombre << endl;
+                    incrementCurrentSongPlays(catalog, player);
+                    mostrarEstado(player);
                 }
                 break;
             case 'E':
@@ -78,7 +99,8 @@ int main(){
                     cout << "La cola de reproduccion esta vacia." << endl;
                 } else {
                     player.nextTrack();
-                    cout << "Siguiente pista: " << player.song.nombre << endl;
+                    incrementCurrentSongPlays(catalog, player);
+                    mostrarEstado(player);
                 }
                 break;
             case 'S':
@@ -101,7 +123,15 @@ int main(){
             case 'L':
             case 'l':
                 clearScreen();
-                SongMenu(listaCanciones, player);
+                SongMenu(catalog, player);
+                break;
+            case 'F':
+            case 'f':
+                SearchMenu(catalog, player);
+                break;
+            case 'T':
+            case 't':
+                RankingMenu(catalog, player);
                 break;
             case 'T':
             case 't':

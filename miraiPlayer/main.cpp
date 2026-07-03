@@ -49,6 +49,7 @@ int main(){
         cout << "No se pudo cargar el catalogo de canciones. Se creara vacio al reiniciar." << endl;
     }
     FileManager::loadPlayCount("song_ranking.txt", catalog.canciones);
+    rebuildMusicCatalog(catalog);
 
     Status status = FileManager::loadStatus("status.cfg");
     player.isShuffle = status.shuffle;
@@ -73,7 +74,7 @@ int main(){
                 clearScreen();
                 player.playPause();
                 if (player.isPlaying){
-                    player.song.reproducciones++;
+
                 }
                 mostrarEstado(player);
                 break;
@@ -84,7 +85,7 @@ int main(){
                     cout << "No hay pista anterior en el historial." << endl;
                 } else {
                     player.prevTrack();
-                    player.song.reproducciones++;
+
                     mostrarEstado(player);
                 }
                 break;
@@ -95,7 +96,7 @@ int main(){
                     cout << "La cola de reproduccion esta vacia." << endl;
                 } else {
                     player.nextTrack();
-                    player.song.reproducciones++;
+
                     mostrarEstado(player);
                 }
                 break;
